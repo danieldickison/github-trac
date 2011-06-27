@@ -17,7 +17,7 @@ setup(
 
     install_requires = [
         'simplejson>=2.0.5',
-        'GitPython==0.1.7',
+        'GitPython>=0.3',
     ],
     entry_points = {
         'trac.plugins': [

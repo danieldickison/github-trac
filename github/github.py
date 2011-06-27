@@ -16,7 +16,7 @@ import os.path
 import simplejson
 import re
 
-from git import Git, GitCommandError
+from git import Repo
 
 class GithubPlugin(Component):
     implements(IRequestHandler, IRequestFilter, IEnvironmentSetupParticipant,
@@ -293,18 +293,22 @@ class GithubPlugin(Component):
             # TODO: This was the previous code, the repo options is probably unecessary now.
 			# repodir = "%s/%s" % (self.repo, reponame)
             self.env.log.debug("Autofetching: %s" % repodir)
-            repo = Git(repodir)
+            repo = Repo(repodir)
 
             try:
-              self.env.log.debug("Fetching repo %s" % self.repo)
-              repo.execute(['git', 'fetch'])
-              try:
-                self.env.log.debug("Resyncing local repo")
-                self.env.get_repository('').sync()
-              except:
-                self.env.log.error("git sync failed!")
-            except:
-              self.env.log.error("git fetch failed!")
+              self.env.log.debug("Fetching repo %s" % repr(repo))
+              origin = repo.remotes.origin
+              origin.fetch()
+            except Exception as e:
+              self.env.log.error("git fetch failed! %s" % repr(e))
+              raise
+            
+            try:
+              self.env.log.debug("Resyncing local repo")
+              self.env.get_repository('').sync()
+            except Exception as e:
+              self.env.log.error("git sync failed! %s" % repr(e))
+              raise
 
         data = req.args.get('payload')
          
