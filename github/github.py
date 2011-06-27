@@ -210,7 +210,7 @@ class GithubPlugin(Component):
             repoinfo = req.path_info.replace('/changeset/', '').partition("/")
             repo = self.env.get_repository(repoinfo[2])
             if repo.__class__.__name__ == "GitRepository":
-            self.env.log.debug("Handle Pre-Request /changeset: %s" % serve2)
+                self.env.log.debug("Handle Pre-Request /changeset: %s" % serve2)
             if serve2:
                 self.processChangesetURL(req)
 
@@ -315,5 +315,5 @@ class GithubPlugin(Component):
             for i in jsondata['commits']:
                 self.hook.process(i, status, self.enable_revmap,reponame)
 
-       self.env.log.debug("Redirect URL: %s" % req)
-       req.redirect(self.browser)
+        self.env.log.debug("Redirect URL: %s" % req)
+        req.redirect(self.browser)
